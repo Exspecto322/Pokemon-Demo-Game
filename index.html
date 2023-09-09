@@ -1,7 +1,35 @@
-<style>
-body {
-    background-color: black;
-}
-</style>
-<canvas></canvas>
-<script src="index.js"></script>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dynamic Canvas Resizing</title>
+    <style>
+        body {
+            background-color: black;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #canvas-container {
+            position: relative; /* Positioning context for canvas */
+            width: 80%; /* Adjust the desired width */
+            max-width: 100%; /* Ensure it doesn't exceed the viewport width */
+        }
+
+        canvas {
+            display: block; /* Ensure canvas takes full width of its container */
+            width: 100%; /* Make the canvas width fill its container */
+            height: auto; /* Maintain the canvas's aspect ratio */
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container">
+        <canvas id="myCanvas"></canvas>
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>
