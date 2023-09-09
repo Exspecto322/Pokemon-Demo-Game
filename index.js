@@ -4,14 +4,51 @@ const c = canvas.getContext('2d');
 canvas.width = 1276
 canvas.height = 840
 
-c.fillStyle = 'white'
-c.fillRect(0, 0, canvas.width, canvas.height)
+const collisionsMap = []
+for (let i = 0; i < collisions.length; i+=24) {
+  collisionsMap.push(collisions.slice(i, 24 + i))  // adds collision to rows with the info from the json Map
+}
+
+class Boundary {
+  static width = 88
+  static height = 88
+  constructor({position}) {
+    this.position = position
+    this.width = 88
+    this.height =  88
+  }
+
+  draw() {
+    c.fillStyle= 'rgba(255,0,0,0)'
+    c.fillRect(this.position.x, this.position.y, this.width, this.height)
+  }
+}
+
+const boundaries = []
+const offset = {
+  x: -50,
+  y: -2159
+}
+
+collisionsMap.forEach((row, i) => {
+  row.forEach((symbol, j) => {
+    if (symbol === 4817)  //collision value from array
+    boundaries.push(
+      new Boundary({
+        position:{
+      x: j * Boundary.width + offset.x, 
+      y: i * Boundary.height + offset.y // collisions with size, 88 is the 32x32 pixels that the map and assets, as they are made at 275% zoom
+       }
+      })
+    )
+  })
+})
 
 const image = new Image()
 image.src = './assets/pokemonStyleGameMap.png'
 
 const playerImage = new Image()
-playerImage.src = './assets/boywalk.png'
+playerImage.src = './assets/boywalkdown.png'
 
 window.addEventListener("keydown", function(e) {
     if(["Space","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(e.code) > -1) {
@@ -20,19 +57,46 @@ window.addEventListener("keydown", function(e) {
 }, false) //Disable scrolling with arrow keys
 
 class Sprite {
-    constructor({position, velocity, image }) {
+    constructor({position, velocity, image, frames = { max: 1 } }) {
         this.position = position
         this.image = image
+        this.frames = frames
+
+        this.image.onload = () => { 
+        this.width = this.image.width / this.frames.max
+        this.height = this.image.height
+      }
     }
     draw(){
-        c.drawImage(this.image, this.position.x, this.position.y)
+        c.drawImage(
+          this.image,
+          0,
+          0,                         
+          this.image.width/this.frames.max,
+          this.image.height,       
+          this.position.x,
+          this.position.y,
+          this.image.width/this.frames.max,
+          this.image.height       
+      )
     } //Class to create map movement
 }
 
+const player = new Sprite({
+  position : {
+    x:canvas.width/2 - (352/2.45)/2,
+    y:canvas.height/2 - (120)/4.5,  //arbitrary size mod as assets are not perfect
+  },
+  image: playerImage,
+  frames: {
+    max:4
+  }
+})
+
 const background = new Sprite({
     position: {
-        x: -50,
-        y: -2159
+        x: offset.x,
+        y: offset.y
     },
     image: image 
 })  //Added background to set ilusion of movement
@@ -52,25 +116,117 @@ const keys = {
     }
 }
 
+const movables = [background, ...boundaries]
+
+function rectangularCollision({rectangle1, rectangle2}) {
+  return (
+    rectangle1.position.x + rectangle1.width >= rectangle2.position.x &&
+    rectangle1.position.x <= rectangle2.position.x + rectangle2.width &&
+    rectangle1.position.y <= rectangle2.position.y + rectangle2.height &&
+    rectangle1.position.y + rectangle1.height >= rectangle2.position.y)
+}
+
 function animate() {
     window.requestAnimationFrame(animate)
     background.draw()
-    c.drawImage(
-        playerImage,
-        0,
-        0,                          //Crop position
-        playerImage.width/4.1,      // Sprite sheet was not perfect, had to modify width maybe have to make future changes
-        playerImage.height/4,       //Crop w&h
-        canvas.width/2 - (playerImage.width/2.45)/2,
-        canvas.height/2 - (playerImage.height/3.5)/2,
-        playerImage.width/4,
-        playerImage.height/4        // Coodinates and actual w&h render
-    )
+    boundaries.forEach(boundary => {
+      boundary.draw()
 
-    if(keys.ArrowUp.pressed && lastKey === 'ArrowUp') background.position.y += 3
-    else if(keys.ArrowDown.pressed && lastKey === 'ArrowDown') background.position.y -= 3
-    else if(keys.ArrowLeft.pressed && lastKey === 'ArrowLeft') background.position.x += 3
-    else if(keys.ArrowRight.pressed && lastKey === 'ArrowRight') background.position.x -= 3
+ 
+    })
+    player.draw()
+  
+
+    let moving = true
+    if(keys.ArrowUp.pressed && lastKey === 'ArrowUp') {
+      for (let i = 0; i< boundaries.length; i++) {
+        const boundary = boundaries[i]
+        if (
+          rectangularCollision({
+            rectangle1: player,
+            rectangle2: {...boundary, position: {
+              x: boundary.position.x,
+              y: boundary.position.y + 3
+            }}
+          })
+        ) {
+          console.log('colliding')
+          moving = false
+          break 
+        }
+      }
+
+      if (moving)
+    movables.forEach((movable) => {
+      movable.position.y += 3
+    }) 
+  } else if(keys.ArrowDown.pressed && lastKey === 'ArrowDown') {
+    for (let i = 0; i< boundaries.length; i++) {
+      const boundary = boundaries[i]
+      if (
+        rectangularCollision({
+          rectangle1: player,
+          rectangle2: {...boundary, position: {
+            x: boundary.position.x,
+            y: boundary.position.y -3
+          }}
+        })
+      ) {
+        console.log('colliding')
+        moving = false
+        break 
+      }
+    }
+
+    if (moving)
+      movables.forEach((movable) => {
+        movable.position.y -= 3
+      }) 
+  } else if(keys.ArrowLeft.pressed && lastKey === 'ArrowLeft') {
+    for (let i = 0; i< boundaries.length; i++) {
+      const boundary = boundaries[i]
+      if (
+        rectangularCollision({
+          rectangle1: player,
+          rectangle2: {...boundary, position: {
+            x: boundary.position.x + 3,
+            y: boundary.position.y
+          }}
+        })
+      ) {
+        console.log('colliding')
+        moving = false
+        break 
+      }
+    }
+
+    if (moving)
+      movables.forEach((movable) => {
+        movable.position.x += 3
+      })    
+  }  else if(keys.ArrowRight.pressed && lastKey === 'ArrowRight') {
+    for (let i = 0; i< boundaries.length; i++) {
+      const boundary = boundaries[i]
+      if (
+        rectangularCollision({
+          rectangle1: player,
+          rectangle2: {...boundary, position: {
+            x: boundary.position.x - 3,
+            y: boundary.position.y
+          }}
+        })
+      ) {
+        console.log('colliding')
+        moving = false
+        break 
+      }
+    }
+
+    if (moving)
+      movables.forEach((movable) => {
+        movable.position.x -= 3
+      }) 
+  }
 }
 animate()
 
