@@ -69,7 +69,7 @@ const foreground = new Sprite({
       y: offset.y
   },
   image: foregroundImage 
-})  //Added background to set ilusion of movement
+})  //Added image to set ilusion of foreground
 
 const keys = {
     ArrowUp: {
