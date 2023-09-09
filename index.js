@@ -5,8 +5,8 @@ canvas.width = 1276
 canvas.height = 840
 
 const collisionsMap = []
-for (let i = 0; i < collisions.length; i+=24) {
-  collisionsMap.push(collisions.slice(i, 24 + i))  // adds collision to rows with the info from the json Map
+for (let i = 0; i < collisions.length; i+=32) {
+  collisionsMap.push(collisions.slice(i, 32 + i))  // adds collision to rows with the info from the json Map
 }
 
 class Boundary {
@@ -19,15 +19,15 @@ class Boundary {
   }
 
   draw() {
-    c.fillStyle= 'rgba(255,0,0,0)'
+    c.fillStyle= 'rgba(255,0,0,0.0)'
     c.fillRect(this.position.x, this.position.y, this.width, this.height)
   }
 }
 
 const boundaries = []
 const offset = {
-  x: -50,
-  y: -2159
+  x: -405,
+  y: -2511
 }
 
 collisionsMap.forEach((row, i) => {
@@ -72,11 +72,11 @@ class Sprite {
           this.image,
           0,
           0,                         
-          this.image.width/this.frames.max,
+          (this.image.width/this.frames.max)-1, // -1 added as sprite seems to have artifact with the cropping
           this.image.height,       
           this.position.x,
           this.position.y,
-          this.image.width/this.frames.max,
+          (this.image.width/this.frames.max)+1, //compensating for artifact
           this.image.height       
       )
     } //Class to create map movement
