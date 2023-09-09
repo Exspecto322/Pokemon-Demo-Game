@@ -5,8 +5,8 @@ canvas.width = 1276
 canvas.height = 840
 
 const collisionsMap = []
-for (let i = 0; i < collisions.length; i+=32) {
-  collisionsMap.push(collisions.slice(i, 32 + i))  // adds collision to rows with the info from the json Map
+for (let i = 0; i < collisions.length; i+=36) {
+  collisionsMap.push(collisions.slice(i, 36 + i))  // adds collision to rows with the info from the json Map
 }
 
 class Boundary {
@@ -14,8 +14,8 @@ class Boundary {
   static height = 88
   constructor({position}) {
     this.position = position
-    this.width = 88
-    this.height =  88
+    this.width = 84
+    this.height =  60  //changed the 88 in height to produce a perspective for the top part of the player
   }
 
   draw() {
@@ -26,8 +26,8 @@ class Boundary {
 
 const boundaries = []
 const offset = {
-  x: -405,
-  y: -2511
+  x: -579,
+  y: -2660
 }
 
 collisionsMap.forEach((row, i) => {
