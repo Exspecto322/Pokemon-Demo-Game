@@ -59,7 +59,7 @@ function animate() {
         playerImage,
         0,
         0,                          //Crop position
-        playerImage.width/4,
+        playerImage.width/4.1,      // Sprite sheet was not perfect, had to modify width maybe have to make future changes
         playerImage.height/4,       //Crop w&h
         canvas.width/2 - (playerImage.width/2.45)/2,
         canvas.height/2 - (playerImage.height/3.5)/2,
