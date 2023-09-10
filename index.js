@@ -35,8 +35,17 @@ image.src = './assets/pokemonStyleGameMap.png'
 const foregroundImage = new Image()
 foregroundImage.src = './assets/foreground.png'
 
-const playerImage = new Image()
-playerImage.src = './assets/boywalkdown.png'
+const playerDownImage = new Image()
+playerDownImage.src = './assets/boywalkdown.png'
+
+const playerUpImage = new Image()
+playerUpImage.src = './assets/boywalkup.png'
+
+const playerLeftImage = new Image()
+playerLeftImage.src = './assets/boywalkleft.png'
+
+const playerRightImage = new Image()
+playerRightImage.src = './assets/boywalkright.png'
 
 window.addEventListener("keydown", function(e) {
     if(["Space","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(e.code) > -1) {
@@ -49,11 +58,18 @@ const player = new Sprite({
     x:canvas.width/2 - (352/2.45)/2,
     y:canvas.height/2 - (120)/4.5,  //arbitrary size mod as assets are not perfect
   },
-  image: playerImage,
+  image: playerDownImage,
   frames: {
     max:4
+  },
+  sprites:{
+    up: playerUpImage,
+    down: playerDownImage,
+    left: playerLeftImage,
+    right: playerRightImage
   }
 })
+console.log(player)
 
 const background = new Sprite({
     position: {
@@ -106,7 +122,10 @@ function animate() {
     foreground.draw()
   
     let moving = true
+    player.moving = false
     if(keys.ArrowUp.pressed && lastKey === 'ArrowUp') {
+      player.moving = true
+      player.image = player.sprites.up
       for (let i = 0; i< boundaries.length; i++) {
         const boundary = boundaries[i]
         if (
@@ -129,6 +148,8 @@ function animate() {
       movable.position.y += 3
     }) 
   } else if(keys.ArrowDown.pressed && lastKey === 'ArrowDown') {
+    player.moving = true
+    player.image = player.sprites.down
     for (let i = 0; i< boundaries.length; i++) {
       const boundary = boundaries[i]
       if (
@@ -151,6 +172,8 @@ function animate() {
         movable.position.y -= 3
       }) 
   } else if(keys.ArrowLeft.pressed && lastKey === 'ArrowLeft') {
+    player.moving = true
+    player.image = player.sprites.left
     for (let i = 0; i< boundaries.length; i++) {
       const boundary = boundaries[i]
       if (
@@ -173,6 +196,8 @@ function animate() {
         movable.position.x += 3
       })    
   }  else if(keys.ArrowRight.pressed && lastKey === 'ArrowRight') {
+    player.moving = true
+    player.image = player.sprites.right
     for (let i = 0; i< boundaries.length; i++) {
       const boundary = boundaries[i]
       if (
