@@ -1,5 +1,6 @@
 const canvas = document.querySelector('canvas');
 const c = canvas.getContext('2d');
+console.log(battleZonesData)
 
 canvas.width = 1276
 canvas.height = 840
@@ -8,6 +9,12 @@ const collisionsMap = []
 for (let i = 0; i < collisions.length; i+=36) {
   collisionsMap.push(collisions.slice(i, 36 + i))  // adds collision to rows with the info from the json Map
 }
+
+const battleZonesMap = []
+for (let i = 0; i < battleZonesData.length; i+=36) {
+  battleZonesMap.push(battleZonesData.slice(i, 36 + i))  // adds battle zones to rows with the info from the json Map
+}
+console.log(battleZonesMap)
 
 const boundaries = []
 const offset = {
@@ -28,6 +35,24 @@ collisionsMap.forEach((row, i) => {
     )
   })
 })
+
+const battleZones =[]
+
+battleZonesMap.forEach((row, i) => {
+  row.forEach((symbol, j) => {
+    if (symbol === 4817)  //collision value from array
+    battleZones.push(
+      new Boundary({
+        position:{
+      x: j * Boundary.width + offset.x, 
+      y: i * Boundary.height + offset.y // collisions with size, 88 is the 32x32 pixels that the map and assets, as they are made at 275% zoom
+       }
+      })
+    )
+  })
+})
+
+console.log(battleZones)
 
 const image = new Image()
 image.src = './assets/pokemonStyleGameMap.png'
@@ -102,7 +127,7 @@ const keys = {
     }
 }
 
-const movables = [background, ...boundaries, foreground]
+const movables = [background, ...boundaries, foreground, ...battleZones]
 
 function rectangularCollision({rectangle1, rectangle2}) {
   return (
@@ -118,14 +143,52 @@ function animate() {
     boundaries.forEach(boundary => {
       boundary.draw()
     })
+    battleZones.forEach(battleZone => {
+      battleZone.draw()
+    })
     player.draw()
     foreground.draw()
+
+    if (
+      keys.ArrowUp.pressed ||
+      keys.ArrowDown.pressed ||
+      keys.ArrowLeft.pressed ||
+      keys.ArrowRight.pressed
+    ) {
+      for (let i = 0; i < battleZones.length; i++) {
+        const battleZone = battleZones[i];
+        const overlapThreshold = 0.25 // threshold
+        const overlappingArea =       // geometry of the area overlapping
+          (Math.min(
+            player.position.x + player.width,
+            battleZone.position.x + battleZone.width
+          ) -
+            Math.max(player.position.x, battleZone.position.x)) *
+          (Math.min(
+            player.position.y + player.height,
+            battleZone.position.y + battleZone.height
+          ) -
+            Math.max(player.position.y, battleZone.position.y));
+        if (
+          rectangularCollision({
+            rectangle1: player,
+            rectangle2: battleZone,
+          }) &&
+          overlappingArea > (player.width * player.height) * overlapThreshold
+          && Math.random () < 0.01
+        ) {
+          console.log("Battle Collision");
+          break;
+        }
+      }
+    }
   
     let moving = true
     player.moving = false
     if(keys.ArrowUp.pressed && lastKey === 'ArrowUp') {
       player.moving = true
       player.image = player.sprites.up
+
       for (let i = 0; i< boundaries.length; i++) {
         const boundary = boundaries[i]
         if (
