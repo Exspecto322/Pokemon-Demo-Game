@@ -1,6 +1,5 @@
 const canvas = document.querySelector('canvas');
 const c = canvas.getContext('2d');
-console.log(battleZonesData)
 
 canvas.width = 1276
 canvas.height = 840
@@ -136,9 +135,13 @@ function rectangularCollision({rectangle1, rectangle2}) {
     rectangle1.position.y <= rectangle2.position.y + rectangle2.height &&
     rectangle1.position.y + rectangle1.height >= rectangle2.position.y)
 }
+const battle = {
+  initiated: false
+}
 
 function animate() {
-    window.requestAnimationFrame(animate)
+    const animationId = window.requestAnimationFrame(animate)
+    console.log(animationId)
     background.draw()
     boundaries.forEach(boundary => {
       boundary.draw()
@@ -149,6 +152,12 @@ function animate() {
     player.draw()
     foreground.draw()
 
+    let moving = true
+    player.moving = false
+
+    console.log(animationId)
+    if (battle.initiated) return
+    //battle activation
     if (
       keys.ArrowUp.pressed ||
       keys.ArrowDown.pressed ||
@@ -178,13 +187,37 @@ function animate() {
           && Math.random () < 0.01
         ) {
           console.log("Battle Collision");
+
+          //deactivate animation loop
+          window.cancelAnimationFrame(animationId)
+
+          battle.initiated = true
+          gsap.to('#overlappingDiv', {
+            opacity: 1,
+            repeat: 3,
+            yoyo: true,
+            duration: 0.4,
+            onComplete() {
+              gsap.to('#overlappingDiv', {
+                opacity: 1,
+                duration: 0.4,
+                onComplete() {
+              //new animation loop
+              animateBattle()
+              gsap.to('#overlappingDiv', {
+                opacity: 0,
+                duration: 0.4
+                  })
+                }
+              })
+            }
+          })
           break;
         }
       }
     }
   
-    let moving = true
-    player.moving = false
+
     if(keys.ArrowUp.pressed && lastKey === 'ArrowUp') {
       player.moving = true
       player.image = player.sprites.up
@@ -285,6 +318,21 @@ function animate() {
   }
 }
 animate()
+
+const battleBackgroundImage = new Image()
+battleBackgroundImage.src = './assets/pokemonBattle.png'
+const battleBackground = new Sprite ({
+  position: {
+    x: 0,
+    y:0 
+  },
+  image: battleBackgroundImage,
+})
+function animateBattle() {
+  window.requestAnimationFrame(animateBattle)
+  battleBackground.draw()
+  console.log('animating battle')
+}
 
 let lastKey =''
 window.addEventListener('keydown', (e) => {
