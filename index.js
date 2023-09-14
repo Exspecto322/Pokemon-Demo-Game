@@ -328,10 +328,21 @@ const battleBackground = new Sprite ({
   },
   image: battleBackgroundImage,
 })
+
+const charmanderImage = new Image()
+charmanderImage.src = './assets/bulbasaurfront.png'
+const charmander = new Sprite({
+  position: {
+    x: 925,
+    y: 150
+  },
+  image: charmanderImage
+})
+
 function animateBattle() {
   window.requestAnimationFrame(animateBattle)
   battleBackground.draw()
-  console.log('animating battle')
+  charmander.draw()
 }
 
 animateBattle()
