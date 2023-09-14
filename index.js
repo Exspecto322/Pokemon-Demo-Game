@@ -317,7 +317,7 @@ function animate() {
       }) 
   }
 }
-animate()
+// animate()
 
 const battleBackgroundImage = new Image()
 battleBackgroundImage.src = './assets/pokemonBattle.png'
@@ -333,6 +333,8 @@ function animateBattle() {
   battleBackground.draw()
   console.log('animating battle')
 }
+
+animateBattle()
 
 let lastKey =''
 window.addEventListener('keydown', (e) => {
