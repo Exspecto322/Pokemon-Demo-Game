@@ -84,7 +84,8 @@ const player = new Sprite({
   },
   image: playerDownImage,
   frames: {
-    max:4
+    max:4,
+    hold: 24
   },
   sprites:{
     up: playerUpImage,
@@ -153,7 +154,7 @@ function animate() {
     foreground.draw()
 
     let moving = true
-    player.moving = false
+    player.animate = false
 
     console.log(animationId)
     if (battle.initiated) return
@@ -219,7 +220,7 @@ function animate() {
   
 
     if(keys.ArrowUp.pressed && lastKey === 'ArrowUp') {
-      player.moving = true
+      player.animate = true
       player.image = player.sprites.up
 
       for (let i = 0; i< boundaries.length; i++) {
@@ -244,7 +245,7 @@ function animate() {
       movable.position.y += 3
     }) 
   } else if(keys.ArrowDown.pressed && lastKey === 'ArrowDown') {
-    player.moving = true
+    player.animate = true
     player.image = player.sprites.down
     for (let i = 0; i< boundaries.length; i++) {
       const boundary = boundaries[i]
@@ -268,7 +269,7 @@ function animate() {
         movable.position.y -= 3
       }) 
   } else if(keys.ArrowLeft.pressed && lastKey === 'ArrowLeft') {
-    player.moving = true
+    player.animate = true
     player.image = player.sprites.left
     for (let i = 0; i< boundaries.length; i++) {
       const boundary = boundaries[i]
@@ -292,7 +293,7 @@ function animate() {
         movable.position.x += 3
       })    
   }  else if(keys.ArrowRight.pressed && lastKey === 'ArrowRight') {
-    player.moving = true
+    player.animate = true
     player.image = player.sprites.right
     for (let i = 0; i< boundaries.length; i++) {
       const boundary = boundaries[i]
@@ -329,12 +330,22 @@ const battleBackground = new Sprite ({
   image: battleBackgroundImage,
 })
 
-const charmanderImage = new Image()
-charmanderImage.src = './assets/bulbasaurfront.png'
-const charmander = new Sprite({
+const squirtleImage = new Image()
+squirtleImage.src = './assets/squirtlefront.png'
+const squirtle = new Sprite({
   position: {
     x: 925,
-    y: 150
+    y: 125
+  },
+  image: squirtleImage
+})
+
+const charmanderImage = new Image()
+charmanderImage.src = './assets/charmanderback.png'
+const charmander = new Sprite({
+  position: {
+    x: 125,
+    y: 350
   },
   image: charmanderImage
 })
@@ -342,10 +353,12 @@ const charmander = new Sprite({
 function animateBattle() {
   window.requestAnimationFrame(animateBattle)
   battleBackground.draw()
+  squirtle.draw()
   charmander.draw()
 }
 
-animateBattle()
+animate()
+// animateBattle()
 
 let lastKey =''
 window.addEventListener('keydown', (e) => {
