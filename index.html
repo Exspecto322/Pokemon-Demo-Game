@@ -24,6 +24,38 @@
             width: 100%; /* Make the canvas width fill its container */
             height: auto; /* Maintain the canvas's aspect ratio */ 
         }
+
+        #arrow-buttons {
+    display: none; /* Initially hide the buttons */
+    position: absolute;
+    bottom: 23%;
+    left: 20%;
+    transform: translateX(-50%);
+    text-align: center;
+}
+.arrow-button {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background-color: rgba(73,71,134, 0.3); /* 50% translucent background */
+    color: white;
+    font-size: 24px;
+    margin: 5px;
+    border: none;
+    border-radius: 50%;
+    touch-action: manipulation; /* Prevent default touch gestures on buttons */
+}
+#left-button { 
+    position: relative;
+    left: -20px; /* spacing to look more circular used relative*/
+}
+#right-button { 
+    position: relative;
+    left: 20px; 
+}
+
+        
+
     </style>
 </head>
 <body>
@@ -32,6 +64,12 @@
         style="background-color: black; position: absolute; top: 0; right: 0; bottom: 0; left: 0; opacity: 0; pointer-events: none;"> 
         </div>  <!-- Black block for transition to battle -->
         <canvas id="myCanvas"></canvas>
+    </div>
+    <div id="arrow-buttons">
+        <button class="arrow-button" id="up-button">↑</button><br>
+        <button class="arrow-button" id="left-button">←</button>
+        <button class="arrow-button" id="right-button">→</button><br>
+        <button class="arrow-button" id="down-button">↓</button>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js" integrity="sha512-H6cPm97FAsgIKmlBA4s774vqoN24V5gSQL4yBTDOY2su2DeXZVhQPxFK4P6GPdnZqM9fg1G3cMv5wD7e6cFLZQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="json/collisions.js"></script>

@@ -13,7 +13,7 @@ const battleZonesMap = []
 for (let i = 0; i < battleZonesData.length; i+=36) {
   battleZonesMap.push(battleZonesData.slice(i, 36 + i))  // adds battle zones to rows with the info from the json Map
 }
-console.log(battleZonesMap)
+// console.log(battleZonesMap)
 
 const boundaries = []
 const offset = {
@@ -51,7 +51,7 @@ battleZonesMap.forEach((row, i) => {
   })
 })
 
-console.log(battleZones)
+// console.log(battleZones)
 
 const image = new Image()
 image.src = './assets/pokemonStyleGameMap.png'
@@ -142,7 +142,7 @@ const battle = {
 
 function animate() {
     const animationId = window.requestAnimationFrame(animate)
-    console.log(animationId)
+    // console.log(animationId)
     background.draw()
     boundaries.forEach(boundary => {
       boundary.draw()
@@ -156,7 +156,7 @@ function animate() {
     let moving = true
     player.animate = false
 
-    console.log(animationId)
+    // console.log(animationId)
     if (battle.initiated) return
     //battle activation
     if (
@@ -398,3 +398,75 @@ window.addEventListener('keyup', (e) => {
         break
     } //Event listener for Arrow Keys Up to stop
 })
+
+// Mobile virtual controls
+
+   // Detect if the user is on a mobile device
+   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+
+   if (isMobile) {
+       // Show the virtual buttons for mobile devices
+       document.querySelector('#arrow-buttons').style.display = 'block';
+   } else {
+       // Hide the virtual buttons on desktop devices
+       document.querySelector('#arrow-buttons').style.display = 'none';
+   }
+
+
+   // Function to start pressing arrow keys on button press
+   function startPressArrowKey(key) {
+       keys[key].pressed = true;
+       lastKey = key;
+   }
+
+   // Function to stop pressing arrow keys on button release
+   function stopPressArrowKey(key) {
+       keys[key].pressed = false;
+   }
+
+   // Event listeners for button clicks to start pressing arrow keys
+   document.querySelector('#up-button').addEventListener('touchstart', (e) => {
+    if (e.cancelable) {
+        e.preventDefault(); // Prevent default touch event behavior if cancelable
+    }
+    startPressArrowKey('ArrowUp');
+});
+
+document.querySelector('#left-button').addEventListener('touchstart', (e) => {
+    if (e.cancelable) {
+        e.preventDefault(); 
+    }
+    startPressArrowKey('ArrowLeft');
+});
+
+document.querySelector('#right-button').addEventListener('touchstart', (e) => {
+    if (e.cancelable) {
+        e.preventDefault(); 
+    }
+    startPressArrowKey('ArrowRight');
+});
+
+document.querySelector('#down-button').addEventListener('touchstart', (e) => {
+    if (e.cancelable) {
+        e.preventDefault(); 
+    }
+    startPressArrowKey('ArrowDown');
+});
+
+   // Event listeners to stop pressing arrow keys on button release
+   document.querySelector('#up-button').addEventListener('touchend', () => {
+       stopPressArrowKey('ArrowUp');
+   });
+
+   document.querySelector('#left-button').addEventListener('touchend', () => {
+       stopPressArrowKey('ArrowLeft');
+   });
+
+   document.querySelector('#right-button').addEventListener('touchend', () => {
+       stopPressArrowKey('ArrowRight');
+   });
+
+   document.querySelector('#down-button').addEventListener('touchend', () => {
+       stopPressArrowKey('ArrowDown');
+   });
