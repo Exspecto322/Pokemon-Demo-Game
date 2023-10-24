@@ -357,8 +357,8 @@ function animateBattle() {
   charmander.draw()
 }
 
-animate()
-// animateBattle()
+// animate()
+animateBattle()
 
 let lastKey =''
 window.addEventListener('keydown', (e) => {
