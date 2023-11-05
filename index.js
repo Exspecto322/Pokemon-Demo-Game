@@ -320,46 +320,6 @@ function animate() {
 }
 // animate()
 
-const battleBackgroundImage = new Image()
-battleBackgroundImage.src = './assets/pokemonBattle.png'
-const battleBackground = new Sprite ({
-  position: {
-    x: 0,
-    y:0 
-  },
-  image: battleBackgroundImage,
-})
-
-const squirtleImage = new Image()
-squirtleImage.src = './assets/squirtlefront.png'
-const squirtle = new Sprite({
-  position: {
-    x: 925,
-    y: 125
-  },
-  image: squirtleImage
-})
-
-const charmanderImage = new Image()
-charmanderImage.src = './assets/charmanderback.png'
-const charmander = new Sprite({
-  position: {
-    x: 125,
-    y: 350
-  },
-  image: charmanderImage
-})
-
-function animateBattle() {
-  window.requestAnimationFrame(animateBattle)
-  battleBackground.draw()
-  squirtle.draw()
-  charmander.draw()
-}
-
-// animate()
-animateBattle()
-
 let lastKey =''
 window.addEventListener('keydown', (e) => {
         switch (e.key) {
