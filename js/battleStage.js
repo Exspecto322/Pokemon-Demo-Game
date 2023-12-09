@@ -71,23 +71,9 @@ document.querySelector("#combatTextDiv").addEventListener("click", (e) => {
     queue[0]();
     queue.shift();
   } else {
-    const combatTextDiv = document.querySelector('#combatTextDiv');
-    const computedStyle = window.getComputedStyle(combatTextDiv);
-    
-    if (computedStyle.getPropertyValue('display') === 'flex') {
-      combatTextDiv.style.display = 'none';
-      console.log('Clicked dialogue');
-      
-      // Hide attackSelectionDiv and sideTextDiv
-      document.querySelector('#attackSelectionDiv').style.display = 'none';
-      document.querySelector('#sideTextDiv').style.display = 'none';
-    } else {
-      combatTextDiv.style.display = 'flex';
-      
-      // Show other elements when combatTextDiv is displayed
-      document.querySelector('#attackSelectionDiv').style.display = 'flex';
-      document.querySelector('#sideTextDiv').style.display = 'flex';
-    }
+    e.currentTarget.style.display = "none";
+
+    console.log("Clicked dialogue");
   }
 });
 
