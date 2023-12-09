@@ -35,7 +35,7 @@
       }
 
       canvas {
-        display: block; /* Ensure canvas takes full width of its container */
+        display: flex; /* Ensure canvas takes full width of its container */
         width: 100%; /* Make the canvas width fill its container */
         height: auto; /* Maintain the canvas's aspect ratio */
       }
@@ -47,6 +47,7 @@
         top: 10%;
         left: 0px;
         opacity: 0.9;
+        display: none;
       }
 
       #databoxPlayer img {
@@ -56,6 +57,7 @@
         top: 52.5%;
         right: 0px;
         opacity: 0.9;
+        display: none;
       }
 
       #lvFoe {
@@ -68,6 +70,7 @@
         font-size: 4.5vw;
         text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); 
         padding: 1px;
+        display: none;
       }
 
       #lvPlayer {
@@ -80,6 +83,7 @@
         font-size: 4.5vw;
         text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); 
         padding: 1px;
+        display: none;
       }
 
       #healthbarFoe {
@@ -97,6 +101,7 @@
         left: 29.45%;
         border-radius: 2px;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* subtle shadow */
+        display: none;
       }
 
       #healthbarPlayer {
@@ -114,6 +119,7 @@
         left: 69%;
         border-radius: 2px;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        display: none;
       }
 
       #battleDiv {
@@ -137,18 +143,17 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: rgb(255, 255, 255, 0.6);
+        background-color: rgb(255, 255, 255, 0);
         padding: 12px;
         color: rgb(67, 67, 52); 
         font-family: "power clear", sans-serif;
         font-size: 4vw;
         text-shadow: 2px 2px 2px rgba(67, 67, 52, 0.3); 
-        display: flex; 
+        display: none; 
         justify-content: center; 
         align-items: center;
         text-align: center;
         z-index: 2;
-        display: none;
         cursor: pointer;
         /* z-index value to place it above src image of attackSelectionDiv */
       }
@@ -159,10 +164,11 @@
         left: 0;
         right: 0;
         bottom: 0;
-        text-align: right;
+        justify-content: flex-end;
         padding-right: 0px;
         z-index: 1;
         /* lower z-index value to place it below the combatTextDiv */
+        display: none;
       }
 
       .databox-text-foe {
@@ -175,6 +181,7 @@
         font-size: 4.5vw;
         text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); 
         padding: 1px;
+        display: none;
       }
 
       .databox-text-player {
@@ -187,6 +194,7 @@
         font-size: 4.5vw;
         text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); 
         padding: 1px;
+        display: none;
       }
 
       .attack-button {
@@ -232,11 +240,9 @@
       #attackSelectionDiv img {
         max-height: 100%;
         max-width: 100%;
-      }
-
-      #attackSelectionDiv img {
-        max-height: 100%; /* Ensure the image doesn't exceed the div's height */
-        max-width: 100%; /* Ensure the image doesn't exceed the div's width */
+        justify-content: flex-end;
+        padding-right: 0px;
+        display: none;
       }
 
       #sideTextDiv {
@@ -247,6 +253,7 @@
         font-family: "power clear", sans-serif;
         font-size: 3.2vw;
         padding: 2px;
+        display: none;
       }
 
       #arrow-buttons {

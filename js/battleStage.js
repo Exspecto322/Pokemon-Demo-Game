@@ -32,6 +32,7 @@ const charmander = new Sprite({
 })
 
 const renderedSprites =[squirtle, charmander]
+
 function animateBattle() {
   window.requestAnimationFrame(animateBattle)
   battleBackground.draw()
@@ -41,8 +42,8 @@ function animateBattle() {
   })
 }
 
-// animate()
-animateBattle()
+animate()
+// animateBattle()
 
 const queue = []
 
@@ -70,12 +71,23 @@ document.querySelector("#combatTextDiv").addEventListener("click", (e) => {
     queue[0]();
     queue.shift();
   } else {
-    e.currentTarget.style.display = 'none';
-    console.log('Clicked dialogue');
+    const combatTextDiv = document.querySelector('#combatTextDiv');
+    const computedStyle = window.getComputedStyle(combatTextDiv);
     
-    // Show other elements when combatTextDiv is hidden
-    document.querySelector('#attackSelectionDiv').style.display = 'block';
-    document.querySelector('#sideTextDiv').style.display = 'block';
+    if (computedStyle.getPropertyValue('display') === 'flex') {
+      combatTextDiv.style.display = 'none';
+      console.log('Clicked dialogue');
+      
+      // Hide attackSelectionDiv and sideTextDiv
+      document.querySelector('#attackSelectionDiv').style.display = 'none';
+      document.querySelector('#sideTextDiv').style.display = 'none';
+    } else {
+      combatTextDiv.style.display = 'flex';
+      
+      // Show other elements when combatTextDiv is displayed
+      document.querySelector('#attackSelectionDiv').style.display = 'flex';
+      document.querySelector('#sideTextDiv').style.display = 'flex';
+    }
   }
 });
 

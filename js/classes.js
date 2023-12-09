@@ -52,9 +52,9 @@ class Sprite {
 
 
   attack({ attack, recipient, renderedSprites }) {
+    // document.querySelector('#attackSelectionDiv').style.display = 'none'
+    // document.querySelector('#sideTextDiv').style.display = 'none'
     document.querySelector('#combatTextDiv').style.display = 'flex'
-    document.querySelector('#attackSelectionDiv').style.display = 'none'
-    document.querySelector('#sideTextDiv').style.display = 'none'
     document.querySelector('#combatTextDiv').innerHTML = this.name + ' used ' + attack.name + '!'
 
     let healthBar = '#healthbarFoe'
