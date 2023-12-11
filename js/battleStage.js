@@ -8,30 +8,20 @@ const battleBackground = new Sprite ({
   image: battleBackgroundImage,
 })
 
-const squirtleImage = new Image()
-squirtleImage.src = './assets/squirtlefront.png'
-const squirtle = new Sprite({
-  position: {
-    x: 925,
-    y: 125
-  },
-  image: squirtleImage,
-  isEnemy: true,
-  name: 'SQUIRTLE'
-})
-
-const charmanderImage = new Image()
-charmanderImage.src = './assets/charmanderback.png'
-const charmander = new Sprite({
-  position: {
-    x: 125,
-    y: 350
-  },
-  image: charmanderImage,
-  name: 'CHARMANDER'
-})
+const charmander = new Pokemon(pkm.Charmander)
+const squirtle = new Pokemon(pkm.Squirtle)
+console.log(charmander)
 
 const renderedSprites =[squirtle, charmander]
+
+charmander.attacks.forEach(attack => {
+const button = document.createElement('button')
+button.innerHTML = attack.name
+button.classList.add('attack-button');
+document.querySelector('#attackSelectionDiv').append(button)
+})
+
+
 
 function animateBattle() {
   window.requestAnimationFrame(animateBattle)

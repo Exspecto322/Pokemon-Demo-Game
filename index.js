@@ -243,9 +243,9 @@ function animate() {
           // Touchstart event listener
           combatTextDiv.addEventListener('touchstart', toggleElementsDisplay);
           
-          // Keypress event listener for the 'Z' key
+          // Keypress event listener for the 'Z' key when attackSelectionDiv & sideTextDiv this keydown should do nothing.
           document.addEventListener('keydown', function(event) {
-            if (event.key === 'z' || event.key === 'Z') {
+            if (!(attackSelectionDiv.style.display === 'flex' && sideTextDiv.style.display === 'flex') && (event.key === 'z' || event.key === 'Z')) {
               toggleElementsDisplay();
             }
           });

@@ -222,16 +222,24 @@
         background-color: #888; /* Change the background color to grey when the button is active (clicked) */
       }
 
-      #ember {
+      /* Styles to button class instead of ids */
+      .attack-button:nth-child(1) {
+        position: absolute;
+  }
+
+      .attack-button:nth-of-type(2) {
+        position: absolute;
         left: 65.38%;
       }
 
-      #attack3 {
+      .attack-button:nth-of-type(3) {
+        position: absolute;
         top: 50%;
         height: 40.5%;
       }
 
-      #attack4 {
+      .attack-button:nth-of-type(4) {
+        position: absolute;
         top: 50%;
         left: 65.38%;
         height: 40.5%;
@@ -335,11 +343,12 @@
           </div>
           <div id="attackSelectionDiv">
             <img src="./assets/choice.png" draggable="false" />
+            <!-- Commented attacks as they are now dynamic will delete in next commit.
             <button id="tackle" class="attack-button">Tackle</button>
             <button id="ember" class="attack-button">Ember</button>
             <br />
             <button id="attack3" class="attack-button" disabled>Attack3</button>
-            <button id="attack4" class="attack-button" disabled>Attack4</button>
+            <button id="attack4" class="attack-button" disabled>Attack4</button> -->
           </div>
         
       </div>
@@ -356,9 +365,10 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
+    <script src="json/battleZones.js"></script>
     <script src="json/collisions.js"></script>\
     <script src="js/attacks.js"></script>
-    <script src="json/battleZones.js"></script>
+    <script src="js/pkm.js"></script>
     <script src="js/classes.js"></script>
     <script src="index.js"></script>
     <script src="js/battleStage.js"></script>
