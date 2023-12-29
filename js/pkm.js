@@ -22,6 +22,6 @@ const pkm = {
     image: squirtleImage,
     isEnemy: true,
     name: "SQUIRTLE",
-    attacks: [attacks.Tackle],
+    attacks: [attacks.Tackle, attacks.Ember],
   },
 };

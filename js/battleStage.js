@@ -45,9 +45,12 @@ document.querySelectorAll("button").forEach((button) => {
       renderedSprites,
     });
 
+    const randomAttack =
+      squirtle.attacks[Math.floor(Math.random() * squirtle.attacks.length)];
+
     queue.push(() => {
       squirtle.attack({
-        attack: attacks.Tackle,
+        attack: randomAttack,
         recipient: charmander,
         renderedSprites,
       });
