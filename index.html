@@ -63,12 +63,12 @@
       #lvFoe {
         position: absolute;
         margin-top: 20px;
-        top: 10%; 
-        left: 48%; 
-        color: #434334; 
+        top: 10%;
+        left: 48%;
+        color: #434334;
         font-family: "power clear", sans-serif;
         font-size: 4.5vw;
-        text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); 
+        text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
         padding: 1px;
         display: none;
       }
@@ -76,12 +76,12 @@
       #lvPlayer {
         position: absolute;
         margin-top: 20px;
-        top: 52%; 
-        left: 88%; 
-        color: #434334; 
+        top: 52%;
+        left: 88%;
+        color: #434334;
         font-family: "power clear", sans-serif;
         font-size: 4.5vw;
-        text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); 
+        text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
         padding: 1px;
         display: none;
       }
@@ -145,12 +145,12 @@
         bottom: 0;
         background-color: rgb(255, 255, 255, 0);
         padding: 12px;
-        color: rgb(67, 67, 52); 
+        color: rgb(67, 67, 52);
         font-family: "power clear", sans-serif;
         font-size: 4vw;
-        text-shadow: 2px 2px 2px rgba(67, 67, 52, 0.3); 
-        display: none; 
-        justify-content: center; 
+        text-shadow: 2px 2px 2px rgba(67, 67, 52, 0.3);
+        display: none;
+        justify-content: center;
         align-items: center;
         text-align: center;
         z-index: 2;
@@ -174,12 +174,12 @@
       .databox-text-foe {
         position: absolute;
         margin-top: 20px;
-        top: 10%; 
-        left: 2.5%; 
-        color: #434334; 
+        top: 10%;
+        left: 2.5%;
+        color: #434334;
         font-family: "power clear", sans-serif;
         font-size: 4.5vw;
-        text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); 
+        text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
         padding: 1px;
         display: none;
       }
@@ -187,12 +187,12 @@
       .databox-text-player {
         position: absolute;
         margin-top: 20px;
-        top: 52%; 
-        left: 45%; 
-        color: #434334; 
+        top: 52%;
+        left: 45%;
+        color: #434334;
         font-family: "power clear", sans-serif;
         font-size: 4.5vw;
-        text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); 
+        text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
         padding: 1px;
         display: none;
       }
@@ -225,7 +225,7 @@
       /* Styles to button class instead of ids */
       .attack-button:nth-child(1) {
         position: absolute;
-  }
+      }
 
       .attack-button:nth-of-type(2) {
         position: absolute;
@@ -324,33 +324,32 @@
       </div>
       <div id="healthbarFoe"></div>
       <h1 class="databox-text-foe">SQUIRTLE</h1>
-      <h2 id = "lvFoe">Lv5</h2>
+      <h2 id="lvFoe">Lv5</h2>
 
       <div id="databoxPlayer">
         <img src="./assets/databox.png" draggable="false" />
       </div>
       <div id="healthbarPlayer"></div>
       <h1 class="databox-text-player">CHARMANDER</h1>
-      <h2 id = "lvPlayer">Lv5</h2>
+      <h2 id="lvPlayer">Lv5</h2>
 
       <canvas id="myCanvas"></canvas>
 
       <div id="battleDiv">
         <div id="combatTextDiv">WILD ENEMY APPEARED!</div>
-          <div id="sideTextDiv">
-            What will <br />
-            you do?
-          </div>
-          <div id="attackSelectionDiv">
-            <img src="./assets/choice.png" draggable="false" />
-            <!-- Commented attacks as they are now dynamic will delete in next commit.
+        <div id="sideTextDiv">
+          What will <br />
+          you do?
+        </div>
+        <div id="attackSelectionDiv">
+          <img src="./assets/choice.png" draggable="false" />
+          <!-- Commented attacks as they are now dynamic will delete in next commit.
             <button id="tackle" class="attack-button">Tackle</button>
             <button id="ember" class="attack-button">Ember</button>
             <br />
             <button id="attack3" class="attack-button" disabled>Attack3</button>
             <button id="attack4" class="attack-button" disabled>Attack4</button> -->
-          </div>
-        
+        </div>
       </div>
     </div>
     <div id="arrow-buttons">
@@ -366,7 +365,8 @@
       referrerpolicy="no-referrer"
     ></script>
     <script src="json/battleZones.js"></script>
-    <script src="json/collisions.js"></script>\
+    <script src="json/collisions.js"></script>
+    \
     <script src="js/attacks.js"></script>
     <script src="js/pkm.js"></script>
     <script src="js/classes.js"></script>
