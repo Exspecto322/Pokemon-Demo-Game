@@ -5,7 +5,6 @@ class Sprite {
     frames = { max: 1, hold: 24 },
     sprites = [],
     animate = false,
-
   }) {
     this.position = position;
     this.image = image;
@@ -56,16 +55,15 @@ class Pokemon extends Sprite {
     animate = false,
     isEnemy = false,
     name,
-    attacks
+    attacks,
   }) {
     super({
       position,
       image,
       frames,
       sprites,
-      animate
-      
-    })
+      animate,
+    });
     this.health = 100;
     this.isEnemy = isEnemy;
     this.name = name;

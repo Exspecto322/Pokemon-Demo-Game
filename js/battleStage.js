@@ -1,60 +1,59 @@
-const battleBackgroundImage = new Image()
-battleBackgroundImage.src = './assets/pokemonBattle.png'
-const battleBackground = new Sprite ({
+const battleBackgroundImage = new Image();
+battleBackgroundImage.src = "./assets/pokemonBattle.png";
+const battleBackground = new Sprite({
   position: {
     x: 0,
-    y:0 
+    y: 0,
   },
   image: battleBackgroundImage,
-})
+});
 
-const charmander = new Pokemon(pkm.Charmander)
-const squirtle = new Pokemon(pkm.Squirtle)
-console.log(charmander)
+const charmander = new Pokemon(pkm.Charmander);
+const squirtle = new Pokemon(pkm.Squirtle);
+console.log(charmander);
 
-const renderedSprites =[squirtle, charmander]
+const renderedSprites = [squirtle, charmander];
 
-charmander.attacks.forEach(attack => {
-const button = document.createElement('button')
-button.innerHTML = attack.name
-button.classList.add('attack-button');
-document.querySelector('#attackSelectionDiv').append(button)
-})
-
-
+charmander.attacks.forEach((attack) => {
+  const button = document.createElement("button");
+  button.innerHTML = attack.name;
+  button.classList.add("attack-button");
+  document.querySelector("#attackSelectionDiv").append(button);
+});
 
 function animateBattle() {
-  window.requestAnimationFrame(animateBattle)
-  battleBackground.draw()
+  window.requestAnimationFrame(animateBattle);
+  battleBackground.draw();
 
   renderedSprites.forEach((sprite) => {
-    sprite.draw()
-  })
+    sprite.draw();
+  });
 }
 
-animate()
+animate();
 // animateBattle()
 
-const queue = []
-
+const queue = [];
 
 // event listeners for our buttons (attack)
-document.querySelectorAll('button').forEach(button => {
-  button.addEventListener('click', (e) => {
-    const selectedAttack = attacks[e.currentTarget.innerHTML]
-    charmander.attack({ attack: selectedAttack,
-    recipient: squirtle,
-    renderedSprites
-   })
+document.querySelectorAll("button").forEach((button) => {
+  button.addEventListener("click", (e) => {
+    const selectedAttack = attacks[e.currentTarget.innerHTML];
+    charmander.attack({
+      attack: selectedAttack,
+      recipient: squirtle,
+      renderedSprites,
+    });
 
-   queue.push(() => {
-    squirtle.attack({ attack: attacks.Tackle,
-      recipient: charmander,
-      renderedSprites
-     })
-   })
-  })
-})
+    queue.push(() => {
+      squirtle.attack({
+        attack: attacks.Tackle,
+        recipient: charmander,
+        renderedSprites,
+      });
+    });
+  });
+});
 
 document.querySelector("#combatTextDiv").addEventListener("click", (e) => {
   if (queue.length > 0) {
@@ -66,7 +65,6 @@ document.querySelector("#combatTextDiv").addEventListener("click", (e) => {
     console.log("Clicked dialogue");
   }
 });
-
 
 document.querySelector("#combatTextDiv").addEventListener("touchstart", (e) => {
   if (queue.length > 0) {
