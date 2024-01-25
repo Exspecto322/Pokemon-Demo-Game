@@ -215,6 +215,7 @@ function animate() {
               duration: 0.4,
               onComplete() {
                 //new animation loop
+                initBattle();
                 animateBattle();
                 gsap.to("#overlappingDiv", {
                   opacity: 0,
@@ -224,76 +225,6 @@ function animate() {
             });
           },
         });
-        // Flag to keep track of combatTextDiv visibility
-        let combatTextVisible = true;
-
-        const combatTextDiv = document.querySelector("#combatTextDiv");
-        const attackSelectionDiv = document.querySelector(
-          "#attackSelectionDiv"
-        );
-        const sideTextDiv = document.querySelector("#sideTextDiv");
-
-        // Function to toggle elements' display
-        function toggleElementsDisplay() {
-          if (combatTextVisible) {
-            combatTextDiv.style.display = "none";
-            combatTextVisible = false;
-
-            attackSelectionDiv.style.display = "flex";
-            sideTextDiv.style.display = "flex";
-          } else {
-            combatTextDiv.style.display = "flex";
-            combatTextVisible = true;
-
-            attackSelectionDiv.style.display = "none";
-            sideTextDiv.style.display = "none";
-          }
-        }
-
-        // Click event listener
-        combatTextDiv.addEventListener("click", toggleElementsDisplay);
-
-        // Touchstart event listener
-        combatTextDiv.addEventListener("touchstart", toggleElementsDisplay);
-
-        // Keypress event listener for the 'Z' key when attackSelectionDiv & sideTextDiv this keydown should do nothing.
-        document.addEventListener("keydown", function (event) {
-          if (
-            !(
-              attackSelectionDiv.style.display === "flex" &&
-              sideTextDiv.style.display === "flex"
-            ) &&
-            (event.key === "z" || event.key === "Z")
-          ) {
-            toggleElementsDisplay();
-          }
-        });
-
-        // Other elements to change to display: flex after #overlappingDiv animation
-        const elementsToChange = [
-          "#databoxFoe img",
-          "#databoxPlayer img",
-          "#lvFoe",
-          "#lvPlayer",
-          "#healthbarFoe",
-          "#healthbarPlayer",
-          "#combatTextDiv",
-          ".databox-text-foe",
-          ".databox-text-player",
-          "#attackSelectionDiv img",
-          // '#attackSelectionDiv',  commented as this is controlled by combatTextDiv visibility
-          // '#sideTextDiv'
-        ];
-
-        // Set a delay of set seconds before changing the display property
-        setTimeout(() => {
-          elementsToChange.forEach((element) => {
-            const el = document.querySelector(element);
-            if (el) {
-              el.style.display = "flex";
-            }
-          });
-        }, 2150); // seconds delay (in milliseconds)
         break;
       }
     }
@@ -410,7 +341,7 @@ function animate() {
       });
   }
 }
-// animate()
+animate();
 
 let lastKey = "";
 window.addEventListener("keydown", (e) => {

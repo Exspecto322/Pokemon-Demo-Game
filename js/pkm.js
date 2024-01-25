@@ -1,16 +1,12 @@
-const charmanderImage = new Image();
-charmanderImage.src = "./assets/charmanderback.png";
-
-const squirtleImage = new Image();
-squirtleImage.src = "./assets/squirtlefront.png";
-
 const pkm = {
   Charmander: {
     position: {
       x: 125,
       y: 350,
     },
-    image: charmanderImage,
+    image: {
+      src: "./assets/charmanderback.png",
+    },
     name: "CHARMANDER",
     attacks: [attacks.Tackle, attacks.Ember, attacks.Ember, attacks.Tackle],
   },
@@ -19,9 +15,11 @@ const pkm = {
       x: 925,
       y: 125,
     },
-    image: squirtleImage,
+    image: {
+      src: "./assets/squirtlefront.png",
+    },
     isEnemy: true,
     name: "SQUIRTLE",
-    attacks: [attacks.Tackle, attacks.Ember],
+    attacks: [attacks.Tackle, attacks["Water Gun"]],
   },
 };

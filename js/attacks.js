@@ -6,7 +6,12 @@ const attacks = {
   },
   Ember: {
     name: "Ember",
-    damage: 25,
+    damage: 20,
     type: "Fire",
+  },
+  "Water Gun": {
+    name: "Water Gun",
+    damage: 20,
+    type: "Water",
   },
 };

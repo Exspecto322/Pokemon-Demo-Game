@@ -316,32 +316,33 @@
           left: 0;
           opacity: 0;
           pointer-events: none;
+          z-index: 10;
         "
       ></div>
       <!-- Black block for transition to battle -->
-      <div id="databoxFoe">
+      <div id="databoxFoe" class="battleUI">
         <img src="./assets/databoxfoe.png" draggable="false" />
       </div>
-      <div id="healthbarFoe"></div>
-      <h1 class="databox-text-foe">SQUIRTLE</h1>
-      <h2 id="lvFoe">Lv5</h2>
+      <div id="healthbarFoe" class="battleUI"></div>
+      <h1 class="databox-text-foe" class="battleUI">SQUIRTLE</h1>
+      <h2 id="lvFoe" class="battleUI">Lv5</h2>
 
-      <div id="databoxPlayer">
+      <div id="databoxPlayer" class="battleUI">
         <img src="./assets/databox.png" draggable="false" />
       </div>
-      <div id="healthbarPlayer"></div>
-      <h1 class="databox-text-player">CHARMANDER</h1>
-      <h2 id="lvPlayer">Lv5</h2>
+      <div id="healthbarPlayer" class="battleUI"></div>
+      <h1 class="databox-text-player" class="battleUI">CHARMANDER</h1>
+      <h2 id="lvPlayer" class="battleUI">Lv5</h2>
 
       <canvas id="myCanvas"></canvas>
 
       <div id="battleDiv">
-        <div id="combatTextDiv">WILD ENEMY APPEARED!</div>
-        <div id="sideTextDiv">
+        <div id="combatTextDiv" class="battleUI">WILD ENEMY APPEARED!</div>
+        <div id="sideTextDiv" class="battleUI">
           What will <br />
           you do?
         </div>
-        <div id="attackSelectionDiv">
+        <div id="attackSelectionDiv" class="battleUI">
           <img src="./assets/choice.png" draggable="false" />
         </div>
       </div>
