@@ -74,12 +74,28 @@ class Pokemon extends Sprite {
   faint() {
     document.querySelector("#combatTextDiv").innerHTML =
       this.name + " FAINTED! ";
-    gsap.to(this.position, {
+
+    const tl = gsap.timeline();
+
+    // Set the starting position of 'y'
+    tl.set(this.position, {
+      y: this.position.y,
+    });
+
+    // Animate 'y' to the new position
+    tl.to(this.position, {
       y: this.position.y + 20,
     });
-    gsap.to(this, {
+
+    tl.to(this, {
       opacity: 0,
     });
+
+    // Animate 'y' back to the starting position
+    tl.to(this.position, {
+      y: this.position.y,
+    });
+
     console.log(this.name + " FAINTED!");
   }
 

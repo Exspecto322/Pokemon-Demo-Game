@@ -24,8 +24,18 @@ function initBattle() {
   let combatTextVisible = true;
 
   const combatTextDiv = document.querySelector("#combatTextDiv");
+  combatTextDiv.innerHTML = "WILD ENEMY APPEARED!";
   const attackSelectionDiv = document.querySelector("#attackSelectionDiv");
   const sideTextDiv = document.querySelector("#sideTextDiv");
+  //Visibility for databoxes
+  document.querySelector("#databoxPlayer").style.display = "flex";
+  document.querySelector("#databoxFoe").style.display = "flex";
+  //Reset healthbars
+  document.querySelector("#healthbarPlayer").style.width = "24.4%";
+  document.querySelector("#healthbarFoe").style.width = "24.4%";
+  // Update health values // this was commented as it was not necessary will be removed next update
+  // charmander.health = charmander.maxHealth;
+  // squirtle.health = squirtle.maxHealth;
 
   // Function to toggle elements' display
   function toggleElementsDisplay() {
@@ -88,6 +98,11 @@ function initBattle() {
       }
     });
   }, 100); // seconds delay (in milliseconds)
+
+  // Clear existing buttons
+  document.querySelectorAll(".attack-button").forEach((button) => {
+    button.remove();
+  });
 
   //Dynamically add attacks
   charmander.attacks.forEach((attack) => {
@@ -194,155 +209,152 @@ document.querySelector("#combatTextDiv").addEventListener("click", (e) => {
   }
 });
 
-// animate();
-// animateBattle();
+document.querySelector("#combatTextDiv").addEventListener("touchstart", (e) => {
+  if (charmander.health <= 0) {
+    charmander.faint();
+    queue.length = 0;
+    e.currentTarget.style.display = "none";
 
-// document.querySelector("#combatTextDiv").addEventListener("touchstart", (e) => {
-//   if (charmander.health <= 0) {
-//     charmander.faint();
-//     queue.length = 0;
-//     e.currentTarget.style.display = "none";
+    // Fade back to black with GSAP animation
+    gsap.to("#overlappingDiv", {
+      opacity: 1,
+      onComplete: () => {
+        // Additional actions after fading back to black for Charmander
+        cancelAnimationFrame(battleAnimationId);
+        animate();
+        battle.initiated = false;
 
-//     // Fade back to black with GSAP animation
-//     gsap.to("#overlappingDiv", {
-//       opacity: 1,
-//       onComplete: () => {
-//         // Additional actions after fading back to black for Charmander
-//         cancelAnimationFrame(battleAnimationId);
-//         animate();
-//         battle.initiated = false;
+        // Hide BattleUI Elements
+        document
+          .querySelectorAll(
+            ".battleUI, .databox-text-foe, .databox-text-player"
+          )
+          .forEach((element) => {
+            element.style.display = "none";
+          });
 
-//         // Hide BattleUI Elements
-//         document
-//           .querySelectorAll(
-//             ".battleUI, .databox-text-foe, .databox-text-player"
-//           )
-//           .forEach((element) => {
-//             element.style.display = "none";
-//           });
+        // Fade out the black overlay
+        gsap.to("#overlappingDiv", {
+          opacity: 0,
+        });
+      },
+    });
 
-//         // Fade out the black overlay
-//         gsap.to("#overlappingDiv", {
-//           opacity: 0,
-//         });
-//       },
-//     });
+    return;
+  } else if (squirtle.health <= 0) {
+    squirtle.faint();
+    queue.length = 0;
+    e.currentTarget.style.display = "none";
 
-//     return;
-//   } else if (squirtle.health <= 0) {
-//     squirtle.faint();
-//     queue.length = 0;
-//     e.currentTarget.style.display = "none";
+    // Fade back to black with GSAP animation
+    gsap.to("#overlappingDiv", {
+      opacity: 1,
+      onComplete: () => {
+        // Additional actions after fading back to black for Squirtle
+        cancelAnimationFrame(battleAnimationId);
+        animate();
+        battle.initiated = false;
 
-//     // Fade back to black with GSAP animation
-//     gsap.to("#overlappingDiv", {
-//       opacity: 1,
-//       onComplete: () => {
-//         // Additional actions after fading back to black for Squirtle
-//         cancelAnimationFrame(battleAnimationId);
-//         animate();
-//         battle.initiated = false;
+        // Hide BattleUI Elements
+        document
+          .querySelectorAll(
+            ".battleUI, .databox-text-foe, .databox-text-player"
+          )
+          .forEach((element) => {
+            element.style.display = "none";
+          });
 
-//         // Hide BattleUI Elements
-//         document
-//           .querySelectorAll(
-//             ".battleUI, .databox-text-foe, .databox-text-player"
-//           )
-//           .forEach((element) => {
-//             element.style.display = "none";
-//           });
+        // Fade out the black overlay
+        gsap.to("#overlappingDiv", {
+          opacity: 0,
+        });
+      },
+    });
 
-//         // Fade out the black overlay
-//         gsap.to("#overlappingDiv", {
-//           opacity: 0,
-//         });
-//       },
-//     });
+    return;
+  }
 
-//     return;
-//   }
+  if (queue.length > 0) {
+    queue[0]();
+    queue.shift();
+  } else {
+    e.currentTarget.style.display = "none";
+    console.log("Touched dialogue");
+  }
+});
 
-//   if (queue.length > 0) {
-//     queue[0]();
-//     queue.shift();
-//   } else {
-//     e.currentTarget.style.display = "none";
-//     console.log("Touched dialogue");
-//   }
-// });
+document.addEventListener("keydown", (e) => {
+  if (e.key === "z" || e.key === "Z") {
+    if (charmander.health <= 0) {
+      charmander.faint();
+      queue.length = 0;
+      document.querySelector("#combatTextDiv").style.display = "none";
 
-// document.addEventListener("keydown", (e) => {
-//   if (e.key === "z" || e.key === "Z") {
-//     if (charmander.health <= 0) {
-//       charmander.faint();
-//       queue.length = 0;
-//       document.querySelector("#combatTextDiv").style.display = "none";
+      // Fade back to black with GSAP animation
+      gsap.to("#overlappingDiv", {
+        opacity: 1,
+        onComplete: () => {
+          // Additional actions after fading back to black for Charmander
+          cancelAnimationFrame(battleAnimationId);
+          animate();
+          battle.initiated = false;
 
-//       // Fade back to black with GSAP animation
-//       gsap.to("#overlappingDiv", {
-//         opacity: 1,
-//         onComplete: () => {
-//           // Additional actions after fading back to black for Charmander
-//           cancelAnimationFrame(battleAnimationId);
-//           animate();
-//           battle.initiated = false;
+          // Hide BattleUI Elements
+          document
+            .querySelectorAll(
+              ".battleUI, .databox-text-foe, .databox-text-player"
+            )
+            .forEach((element) => {
+              element.style.display = "none";
+            });
 
-//           // Hide BattleUI Elements
-//           document
-//             .querySelectorAll(
-//               ".battleUI, .databox-text-foe, .databox-text-player"
-//             )
-//             .forEach((element) => {
-//               element.style.display = "none";
-//             });
+          // Fade out the black overlay
+          gsap.to("#overlappingDiv", {
+            opacity: 0,
+          });
+        },
+      });
 
-//           // Fade out the black overlay
-//           gsap.to("#overlappingDiv", {
-//             opacity: 0,
-//           });
-//         },
-//       });
+      return;
+    } else if (squirtle.health <= 0) {
+      squirtle.faint();
+      queue.length = 0;
+      document.querySelector("#combatTextDiv").style.display = "none";
 
-//       return;
-//     } else if (squirtle.health <= 0) {
-//       squirtle.faint();
-//       queue.length = 0;
-//       document.querySelector("#combatTextDiv").style.display = "none";
+      // Fade back to black with GSAP animation
+      gsap.to("#overlappingDiv", {
+        opacity: 1,
+        onComplete: () => {
+          // Additional actions after fading back to black for Squirtle
+          cancelAnimationFrame(battleAnimationId);
+          animate();
+          battle.initiated = false;
 
-//       // Fade back to black with GSAP animation
-//       gsap.to("#overlappingDiv", {
-//         opacity: 1,
-//         onComplete: () => {
-//           // Additional actions after fading back to black for Squirtle
-//           cancelAnimationFrame(battleAnimationId);
-//           animate();
-//           battle.initiated = false;
+          // Hide BattleUI Elements
+          document
+            .querySelectorAll(
+              ".battleUI, .databox-text-foe, .databox-text-player"
+            )
+            .forEach((element) => {
+              element.style.display = "none";
+            });
 
-//           // Hide BattleUI Elements
-//           document
-//             .querySelectorAll(
-//               ".battleUI, .databox-text-foe, .databox-text-player"
-//             )
-//             .forEach((element) => {
-//               element.style.display = "none";
-//             });
+          // Fade out the black overlay
+          gsap.to("#overlappingDiv", {
+            opacity: 0,
+          });
+        },
+      });
 
-//           // Fade out the black overlay
-//           gsap.to("#overlappingDiv", {
-//             opacity: 0,
-//           });
-//         },
-//       });
+      return;
+    }
 
-//       return;
-//     }
-
-//     if (queue.length > 0) {
-//       queue[0]();
-//       queue.shift();
-//     } else {
-//       document.querySelector("#combatTextDiv").style.display = "none";
-//       console.log("Z key pressed");
-//     }
-//   }
-// });
+    if (queue.length > 0) {
+      queue[0]();
+      queue.shift();
+    } else {
+      document.querySelector("#combatTextDiv").style.display = "none";
+      console.log("Z key pressed");
+    }
+  }
+});
