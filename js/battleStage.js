@@ -210,6 +210,7 @@ document.querySelector("#combatTextDiv").addEventListener("click", (e) => {
 });
 
 document.querySelector("#combatTextDiv").addEventListener("touchstart", (e) => {
+  e.preventDefault();
   if (charmander.health <= 0) {
     charmander.faint();
     queue.length = 0;
