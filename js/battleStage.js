@@ -13,6 +13,7 @@ let squirtle;
 let renderedSprites;
 let battleAnimationId;
 let queue;
+let awaitingExit = false;
 
 function initBattle() {
   charmander = new Pokemon(pkm.Charmander);
@@ -148,56 +149,46 @@ function animateBattle() {
 }
 
 document.querySelector("#combatTextDiv").addEventListener("click", (e) => {
+  if (awaitingExit) {
+    // Player clicked to confirm faint and exit battle
+    e.currentTarget.style.display = "none";
+    gsap.to("#overlappingDiv", {
+      opacity: 1,
+      onComplete: () => {
+        cancelAnimationFrame(battleAnimationId);
+        animate();
+        // Hide BattleUI Elements
+        document
+          .querySelectorAll(
+            ".battleUI, .databox-text-foe, .databox-text-player"
+          )
+          .forEach((element) => {
+            element.style.display = "none";
+          });
+        gsap.to("#overlappingDiv", {
+          opacity: 0,
+        });
+        battle.initiated = false;
+        awaitingExit = false;
+      },
+    });
+    return;
+  }
+
   if (charmander.health <= 0) {
+    // Show faint animation/text and wait for player to click to exit
     charmander.faint();
     queue.length = 0; // Clear any remaining actions in the queue
-    e.currentTarget.style.display = "none";
-    //fade back to black
-    gsap.to("#overlappingDiv", {
-      opacity: 1,
-      onComplete: () => {
-        cancelAnimationFrame(battleAnimationId);
-        animate();
-        battle.initiated = false;
-        //Hide BattleUI Elements
-        document
-          .querySelectorAll(
-            ".battleUI, .databox-text-foe, .databox-text-player"
-          )
-          .forEach((element) => {
-            element.style.display = "none";
-          });
-        gsap.to("#overlappingDiv", {
-          opacity: 0,
-        });
-      },
-    });
-    return; // Stop further actions
+    awaitingExit = true;
+    e.currentTarget.style.display = "flex";
+    return; // Stop further actions until player confirms
   } else if (squirtle.health <= 0) {
+    // Show faint animation/text and wait for player to click to exit
     squirtle.faint();
     queue.length = 0; // Clear any remaining actions in the queue
-    e.currentTarget.style.display = "none";
-    //fade back to black
-    gsap.to("#overlappingDiv", {
-      opacity: 1,
-      onComplete: () => {
-        cancelAnimationFrame(battleAnimationId);
-        animate();
-        battle.initiated = false;
-        //Hide BattleUI Elements
-        document
-          .querySelectorAll(
-            ".battleUI, .databox-text-foe, .databox-text-player"
-          )
-          .forEach((element) => {
-            element.style.display = "none";
-          });
-        gsap.to("#overlappingDiv", {
-          opacity: 0,
-        });
-      },
-    });
-    return; // Stop further actions
+    awaitingExit = true;
+    e.currentTarget.style.display = "flex";
+    return; // Stop further actions until player confirms
   }
 
   if (queue.length > 0) {
@@ -211,21 +202,16 @@ document.querySelector("#combatTextDiv").addEventListener("click", (e) => {
 
 document.querySelector("#combatTextDiv").addEventListener("touchstart", (e) => {
   e.preventDefault();
-  if (charmander.health <= 0) {
-    charmander.faint();
-    queue.length = 0;
+  if (awaitingExit) {
+    // Player confirmed faint via touch; perform exit
     e.currentTarget.style.display = "none";
 
-    // Fade back to black with GSAP animation
     gsap.to("#overlappingDiv", {
       opacity: 1,
       onComplete: () => {
-        // Additional actions after fading back to black for Charmander
         cancelAnimationFrame(battleAnimationId);
         animate();
-        battle.initiated = false;
 
-        // Hide BattleUI Elements
         document
           .querySelectorAll(
             ".battleUI, .databox-text-foe, .databox-text-player"
@@ -234,43 +220,31 @@ document.querySelector("#combatTextDiv").addEventListener("touchstart", (e) => {
             element.style.display = "none";
           });
 
-        // Fade out the black overlay
         gsap.to("#overlappingDiv", {
           opacity: 0,
         });
+        battle.initiated = false;
+        awaitingExit = false;
       },
     });
 
     return;
+  }
+
+  if (charmander.health <= 0) {
+    // Show faint animation/text and wait for player to confirm via touch
+    charmander.faint();
+    queue.length = 0;
+    awaitingExit = true;
+    e.currentTarget.style.display = "flex";
+
+    return;
   } else if (squirtle.health <= 0) {
+    // Show faint animation/text and wait for player to confirm via touch
     squirtle.faint();
     queue.length = 0;
-    e.currentTarget.style.display = "none";
-
-    // Fade back to black with GSAP animation
-    gsap.to("#overlappingDiv", {
-      opacity: 1,
-      onComplete: () => {
-        // Additional actions after fading back to black for Squirtle
-        cancelAnimationFrame(battleAnimationId);
-        animate();
-        battle.initiated = false;
-
-        // Hide BattleUI Elements
-        document
-          .querySelectorAll(
-            ".battleUI, .databox-text-foe, .databox-text-player"
-          )
-          .forEach((element) => {
-            element.style.display = "none";
-          });
-
-        // Fade out the black overlay
-        gsap.to("#overlappingDiv", {
-          opacity: 0,
-        });
-      },
-    });
+    awaitingExit = true;
+    e.currentTarget.style.display = "flex";
 
     return;
   }
@@ -286,21 +260,16 @@ document.querySelector("#combatTextDiv").addEventListener("touchstart", (e) => {
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "z" || e.key === "Z") {
-    if (charmander.health <= 0) {
-      charmander.faint();
-      queue.length = 0;
+    if (awaitingExit) {
+      // Player pressed 'Z' to confirm faint and exit
       document.querySelector("#combatTextDiv").style.display = "none";
 
-      // Fade back to black with GSAP animation
       gsap.to("#overlappingDiv", {
         opacity: 1,
         onComplete: () => {
-          // Additional actions after fading back to black for Charmander
           cancelAnimationFrame(battleAnimationId);
           animate();
-          battle.initiated = false;
 
-          // Hide BattleUI Elements
           document
             .querySelectorAll(
               ".battleUI, .databox-text-foe, .databox-text-player"
@@ -309,43 +278,31 @@ document.addEventListener("keydown", (e) => {
               element.style.display = "none";
             });
 
-          // Fade out the black overlay
           gsap.to("#overlappingDiv", {
             opacity: 0,
           });
+          battle.initiated = false;
+          awaitingExit = false;
         },
       });
 
       return;
+    }
+
+    if (charmander.health <= 0) {
+      // Show faint animation/text and wait for player to confirm via Z key
+      charmander.faint();
+      queue.length = 0;
+      awaitingExit = true;
+      document.querySelector("#combatTextDiv").style.display = "flex";
+
+      return;
     } else if (squirtle.health <= 0) {
+      // Show faint animation/text and wait for player to confirm via Z key
       squirtle.faint();
       queue.length = 0;
-      document.querySelector("#combatTextDiv").style.display = "none";
-
-      // Fade back to black with GSAP animation
-      gsap.to("#overlappingDiv", {
-        opacity: 1,
-        onComplete: () => {
-          // Additional actions after fading back to black for Squirtle
-          cancelAnimationFrame(battleAnimationId);
-          animate();
-          battle.initiated = false;
-
-          // Hide BattleUI Elements
-          document
-            .querySelectorAll(
-              ".battleUI, .databox-text-foe, .databox-text-player"
-            )
-            .forEach((element) => {
-              element.style.display = "none";
-            });
-
-          // Fade out the black overlay
-          gsap.to("#overlappingDiv", {
-            opacity: 0,
-          });
-        },
-      });
+      awaitingExit = true;
+      document.querySelector("#combatTextDiv").style.display = "flex";
 
       return;
     }

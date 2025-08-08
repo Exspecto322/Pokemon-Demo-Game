@@ -58,17 +58,23 @@ class Pokemon extends Sprite {
     name,
     attacks,
   }) {
+    // Clone the incoming position so we can keep a stable basePosition
+    const clonedPosition = { x: position.x, y: position.y };
     super({
-      position,
+      position: clonedPosition,
       image,
       frames,
       sprites,
       animate,
     });
+    // Save original base position to always return sprites here after animations
+    this.basePosition = { x: clonedPosition.x, y: clonedPosition.y };
     this.health = 125;
     this.isEnemy = isEnemy;
     this.name = name;
     this.attacks = attacks;
+    // Guard to prevent overlapping attack animations when player clicks fast
+    this.isAnimating = false;
   }
 
   faint() {
@@ -77,40 +83,68 @@ class Pokemon extends Sprite {
 
     const tl = gsap.timeline();
 
-    // Set the starting position of 'y'
-    tl.set(this.position, {
-      y: this.position.y,
-    });
+    // Ensure we start from the base position (prevents drift)
+    if (this.basePosition) {
+      gsap.set(this.position, {
+        x: this.basePosition.x,
+        y: this.basePosition.y,
+      });
+    }
 
-    // Animate 'y' to the new position
+    // small drop and fade out
     tl.to(this.position, {
       y: this.position.y + 20,
+      duration: 0.4,
     });
+    tl.to(
+      this,
+      {
+        opacity: 0,
+        duration: 0.5,
+      },
+      ">0"
+    );
 
-    tl.to(this, {
-      opacity: 0,
-    });
-
-    // Animate 'y' back to the starting position
-    tl.to(this.position, {
-      y: this.position.y,
-    });
+    // return y to base so when battle restarts or other logic runs, sprite is back
+    tl.set(this.position, { x: this.basePosition.x, y: this.basePosition.y });
 
     console.log(this.name + " FAINTED!");
   }
 
   attack({ attack, recipient, renderedSprites }) {
+    // Prevent overlapping attacks
+    if (this.isAnimating) return;
+    this.isAnimating = true;
+
     document.querySelector("#attackSelectionDiv").style.display = "none";
     document.querySelector("#sideTextDiv").style.display = "none";
     document.querySelector("#combatTextDiv").style.display = "flex";
     document.querySelector("#combatTextDiv").innerHTML =
       this.name + " used " + attack.name + "!";
 
+    // Kill any existing tweens affecting positions to avoid stacking offsets
+    gsap.killTweensOf(this.position);
+    gsap.killTweensOf(recipient.position);
+
+    // Snap both combatants to their base positions before animating
+    if (this.basePosition) {
+      gsap.set(this.position, {
+        x: this.basePosition.x,
+        y: this.basePosition.y,
+      });
+    }
+    if (recipient.basePosition) {
+      gsap.set(recipient.position, {
+        x: recipient.basePosition.x,
+        y: recipient.basePosition.y,
+      });
+    }
+
     let healthBar = "#healthbarFoe";
     if (this.isEnemy) healthBar = "#healthbarPlayer";
 
     switch (attack.name) {
-      case "Ember":
+      case "Ember": {
         const emberImage = new Image();
         emberImage.src = "./assets/ember.png";
         const ember = new Sprite({
@@ -126,6 +160,7 @@ class Pokemon extends Sprite {
           animate: true,
         });
 
+        // Add ember to rendering array (in front of background)
         renderedSprites.splice(1, 0, ember);
 
         gsap.to(ember.position, {
@@ -134,32 +169,29 @@ class Pokemon extends Sprite {
           duration: 1.5,
           ease: "power4.out",
           onComplete: () => {
-            //Enemy gets hit
-            // Check for a critical hit with a 5% probability
+            // Damage calculation (critical chance)
             const isCriticalHit = Math.random() < 0.05;
-
-            // Calculate the damage based on whether it's a critical hit or not
             const damage = isCriticalHit ? attack.damage * 2.75 : attack.damage;
 
-            // Calculate the new health
             recipient.health -= damage;
-
-            // Ensure the health doesn't go below 0
             recipient.health = Math.max(recipient.health, 0);
 
-            // Calculate the new health bar width based on the updated health percentage
-            const healthbarWidth = (recipient.health / 125) * 24.4; // 24.4% max width
+            const healthbarWidth = (recipient.health / 125) * 24.4;
 
-            // Animate the health bar width change
             gsap.to(healthBar, {
               width: healthbarWidth + "%",
               onComplete: () => {
-                // Output it's a critical hit
-                if (isCriticalHit) {
-                  console.log("Critical Hit!");
-                }
+                if (isCriticalHit) console.log("Critical Hit!");
               },
             });
+
+            // Ensure recipient starts from its base position before hit shake
+            if (recipient.basePosition) {
+              gsap.set(recipient.position, {
+                x: recipient.basePosition.x,
+                y: recipient.basePosition.y,
+              });
+            }
 
             gsap.to(recipient.position, {
               x: recipient.position.x + 10,
@@ -172,53 +204,63 @@ class Pokemon extends Sprite {
               repeat: 5,
               yoyo: true,
               duration: 0.08,
+              onComplete: () => {
+                // restore recipient opacity and position
+                if (recipient.basePosition) {
+                  gsap.set(recipient.position, {
+                    x: recipient.basePosition.x,
+                    y: recipient.basePosition.y,
+                  });
+                }
+                recipient.opacity = 1;
+                // remove ember from render list
+                const index = renderedSprites.indexOf(ember);
+                if (index > -1) renderedSprites.splice(index, 1);
+                // allow further animations
+                this.isAnimating = false;
+              },
             });
-            renderedSprites.splice(1, 1);
           },
         });
-
         break;
-      case "Tackle":
+      }
+      case "Tackle": {
         const tl = gsap.timeline();
 
         let movementDistance = 20;
         if (this.isEnemy) movementDistance = -20;
 
+        const baseX = this.basePosition ? this.basePosition.x : this.position.x;
+
         tl.to(this.position, {
-          x: this.position.x - movementDistance,
+          x: baseX - movementDistance,
         })
           .to(this.position, {
-            x: this.position.x + movementDistance * 2,
+            x: baseX + movementDistance * 2,
             duration: 0.1,
             onComplete: () => {
-              //Enemy gets hit
-              // Check for a critical hit with a 10% probability
               const isCriticalHit = Math.random() < 0.1;
-
-              // Calculate the damage based on whether it's a critical hit or not
               const damage = isCriticalHit
                 ? attack.damage * 2.75
                 : attack.damage;
 
-              // Calculate the new health
               recipient.health -= damage;
-
-              // Ensure the health doesn't go below 0
               recipient.health = Math.max(recipient.health, 0);
 
-              // Calculate the new health bar width based on the updated health percentage
-              const healthbarWidth = (recipient.health / 125) * 24.4; // 24.4% max width
-
-              // Animate the health bar width change
+              const healthbarWidth = (recipient.health / 125) * 24.4;
               gsap.to(healthBar, {
                 width: healthbarWidth + "%",
                 onComplete: () => {
-                  // Output it's a critical hit
-                  if (isCriticalHit) {
-                    console.log("Critical Hit!");
-                  }
+                  if (isCriticalHit) console.log("Critical Hit!");
                 },
               });
+
+              if (recipient.basePosition) {
+                gsap.set(recipient.position, {
+                  x: recipient.basePosition.x,
+                  y: recipient.basePosition.y,
+                });
+              }
 
               gsap.to(recipient.position, {
                 x: recipient.position.x + 10,
@@ -231,15 +273,33 @@ class Pokemon extends Sprite {
                 repeat: 5,
                 yoyo: true,
                 duration: 0.08,
+                onComplete: () => {
+                  // restore recipient position & opacity
+                  if (recipient.basePosition) {
+                    gsap.set(recipient.position, {
+                      x: recipient.basePosition.x,
+                      y: recipient.basePosition.y,
+                    });
+                  }
+                  recipient.opacity = 1;
+                },
               });
             },
           })
-          .to(this.position, {
-            x: this.position.x,
+          .to(
+            this.position,
+            {
+              x: baseX,
+            },
+            ">" // ensure it runs after previous steps
+          )
+          .call(() => {
+            // Mark that this attack animation finished so input can continue
+            this.isAnimating = false;
           });
         break;
-
-      case "Water Gun":
+      }
+      case "Water Gun": {
         const waterGunImage = new Image();
         waterGunImage.src = "./assets/watergun.png";
         const waterGun = new Sprite({
@@ -263,32 +323,27 @@ class Pokemon extends Sprite {
           duration: 1.75,
           ease: "power1.out",
           onComplete: () => {
-            //Enemy gets hit
-            // Check for a critical hit with a 5% probability
             const isCriticalHit = Math.random() < 0.05;
-
-            // Calculate the damage based on whether it's a critical hit or not
             const damage = isCriticalHit ? attack.damage * 2.75 : attack.damage;
 
-            // Calculate the new health
             recipient.health -= damage;
-
-            // Ensure the health doesn't go below 0
             recipient.health = Math.max(recipient.health, 0);
 
-            // Calculate the new health bar width based on the updated health percentage
-            const healthbarWidth = (recipient.health / 125) * 24.4; // 24.4% max width
+            const healthbarWidth = (recipient.health / 125) * 24.4;
 
-            // Animate the health bar width change
             gsap.to(healthBar, {
               width: healthbarWidth + "%",
               onComplete: () => {
-                // Output it's a critical hit
-                if (isCriticalHit) {
-                  console.log("Critical Hit!");
-                }
+                if (isCriticalHit) console.log("Critical Hit!");
               },
             });
+
+            if (recipient.basePosition) {
+              gsap.set(recipient.position, {
+                x: recipient.basePosition.x,
+                y: recipient.basePosition.y,
+              });
+            }
 
             gsap.to(recipient.position, {
               x: recipient.position.x + 10,
@@ -301,13 +356,26 @@ class Pokemon extends Sprite {
               repeat: 5,
               yoyo: true,
               duration: 0.08,
+              onComplete: () => {
+                if (recipient.basePosition) {
+                  gsap.set(recipient.position, {
+                    x: recipient.basePosition.x,
+                    y: recipient.basePosition.y,
+                  });
+                }
+                recipient.opacity = 1;
+                const index = renderedSprites.indexOf(waterGun);
+                if (index > -1) renderedSprites.splice(index, 1);
+                this.isAnimating = false;
+              },
             });
-            renderedSprites.splice(1, 1);
           },
         });
 
         break;
+      }
     }
+
     console.log(this.name + "'s remaining health: " + this.health);
     console.log(recipient.name + "'s remaining health: " + recipient.health);
   }
@@ -323,7 +391,13 @@ class Boundary {
   }
 
   draw() {
-    c.fillStyle = "rgba(255,0,0,0.0)";
+    c.fillStyle = "rgba(255,0,0,0)";
     c.fillRect(this.position.x, this.position.y, this.width, this.height);
+  }
+}
+
+class Hill extends Boundary {
+  constructor({ position }) {
+    super({ position });
   }
 }

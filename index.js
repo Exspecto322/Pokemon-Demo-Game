@@ -9,6 +9,13 @@ for (let i = 0; i < collisions.length; i += 36) {
   collisionsMap.push(collisions.slice(i, 36 + i)); // adds collision to rows with the info from the json Map
 }
 
+const hillsMap = [];
+for (let i = 0; i < hills.length; i += 36) {
+  hillsMap.push(hills.slice(i, 36 + i)); // adds hills to rows with the info from the json Map
+}
+
+const hillsList = [];
+
 const battleZonesMap = [];
 for (let i = 0; i < battleZonesData.length; i += 36) {
   battleZonesMap.push(battleZonesData.slice(i, 36 + i)); // adds battle zones to rows with the info from the json Map
@@ -33,6 +40,22 @@ collisionsMap.forEach((row, i) => {
           },
         })
       );
+  });
+});
+
+hillsMap.forEach((row, i) => {
+  row.forEach((symbol, j) => {
+    if (symbol === 4817) {
+      // hill collision value from array
+      hillsList.push(
+        new Hill({
+          position: {
+            x: j * Hill.width + offset.x,
+            y: i * Hill.height + offset.y, // hills with size, 88 is the 32x32 pixels that the map and assets, as they are made at 275% zoom
+          },
+        })
+      );
+    }
   });
 });
 
