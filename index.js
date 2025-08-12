@@ -127,6 +127,7 @@ const player = new Sprite({
     right: playerRightImage,
   },
 });
+player.isJumping = false;
 console.log(player);
 
 const background = new Sprite({
@@ -160,7 +161,60 @@ const keys = {
   },
 };
 
-const movables = [background, ...boundaries, foreground, ...battleZones];
+const movables = [
+  background,
+  ...boundaries,
+  ...hillsList,
+  foreground,
+  ...battleZones,
+];
+
+function playerJump() {
+  const jumpDistance = Hill.height;
+  player.isJumping = true;
+  player.animate = true;
+  const positions = movables.map((movable) => movable.position);
+  gsap.to(positions, {
+    y: `-=${jumpDistance}`,
+    duration: 0.3,
+    onComplete: () => {
+      player.isJumping = false;
+    },
+  });
+}
+
+// Check collision against hills in a given direction.
+// Hills behave like boundaries on the sides and when walking up them,
+// but walking down onto a hill triggers a jump animation instead of a hard stop.
+function checkHillCollision(direction) {
+  const offsets = {
+    up: { x: 0, y: 3 },
+    down: { x: 0, y: -3 },
+    left: { x: 3, y: 0 },
+    right: { x: -3, y: 0 },
+  };
+  const offset = offsets[direction];
+
+  for (let i = 0; i < hillsList.length; i++) {
+    const hill = hillsList[i];
+    if (
+      rectangularCollision({
+        rectangle1: player,
+        rectangle2: {
+          ...hill,
+          position: {
+            x: hill.position.x + offset.x,
+            y: hill.position.y + offset.y,
+          },
+        },
+      })
+    ) {
+      if (direction === "down") playerJump();
+      return true;
+    }
+  }
+  return false;
+}
 
 function rectangularCollision({ rectangle1, rectangle2 }) {
   return (
@@ -181,6 +235,9 @@ function animate() {
   boundaries.forEach((boundary) => {
     boundary.draw();
   });
+  hillsList.forEach((hill) => {
+    hill.draw();
+  });
   battleZones.forEach((battleZone) => {
     battleZone.draw();
   });
@@ -191,7 +248,7 @@ function animate() {
   player.animate = false;
 
   // console.log(animationId)
-  if (battle.initiated) return;
+  if (battle.initiated || player.isJumping) return;
   //battle activation
   if (
     keys.ArrowUp.pressed ||
@@ -276,6 +333,7 @@ function animate() {
         break;
       }
     }
+    if (checkHillCollision("up")) moving = false;
 
     if (moving)
       movables.forEach((movable) => {
@@ -302,6 +360,9 @@ function animate() {
         moving = false;
         break;
       }
+    }
+    if (checkHillCollision("down")) {
+      moving = false;
     }
 
     if (moving)
@@ -330,6 +391,7 @@ function animate() {
         break;
       }
     }
+    if (checkHillCollision("left")) moving = false;
 
     if (moving)
       movables.forEach((movable) => {
@@ -357,6 +419,7 @@ function animate() {
         break;
       }
     }
+    if (checkHillCollision("right")) moving = false;
 
     if (moving)
       movables.forEach((movable) => {
