@@ -163,18 +163,27 @@ class Pokemon extends Sprite {
         // Add ember to rendering array (in front of background)
         renderedSprites.splice(1, 0, ember);
 
+        const isCriticalHit = Math.random() < 0.05;
+        const damage = isCriticalHit
+          ? Math.round(attack.damage * 2.75)
+          : attack.damage;
+
+        if (isCriticalHit) {
+          queue.push(() => {
+            document.querySelector("#combatTextDiv").innerHTML =
+              "CRITICAL HIT!";
+            document.querySelector("#combatTextDiv").style.display = "flex";
+          });
+        }
+
         gsap.to(ember.position, {
           x: recipient.position.x,
           y: recipient.position.y,
           duration: 1.5,
           ease: "power4.out",
           onComplete: () => {
-            // Damage calculation (critical chance)
-            const isCriticalHit = Math.random() < 0.05;
-            const damage = isCriticalHit ? attack.damage * 2.75 : attack.damage;
-
             recipient.health -= damage;
-            recipient.health = Math.max(recipient.health, 0);
+            recipient.health = Math.max(Math.round(recipient.health), 0);
 
             const healthbarWidth = (recipient.health / 125) * 24.4;
 
@@ -241,11 +250,20 @@ class Pokemon extends Sprite {
             onComplete: () => {
               const isCriticalHit = Math.random() < 0.1;
               const damage = isCriticalHit
-                ? attack.damage * 2.75
+                ? Math.round(attack.damage * 2.75)
                 : attack.damage;
 
+              if (isCriticalHit) {
+                queue.push(() => {
+                  document.querySelector("#combatTextDiv").innerHTML =
+                    "Critical hit!";
+                  document.querySelector("#combatTextDiv").style.display =
+                    "flex";
+                });
+              }
+
               recipient.health -= damage;
-              recipient.health = Math.max(recipient.health, 0);
+              recipient.health = Math.max(Math.round(recipient.health), 0);
 
               const healthbarWidth = (recipient.health / 125) * 24.4;
               gsap.to(healthBar, {
@@ -317,17 +335,27 @@ class Pokemon extends Sprite {
 
         renderedSprites.splice(1, 0, waterGun);
 
+        const isCriticalHit = Math.random() < 0.05;
+        const damage = isCriticalHit
+          ? Math.round(attack.damage * 2.75)
+          : attack.damage;
+
+        if (isCriticalHit) {
+          queue.push(() => {
+            document.querySelector("#combatTextDiv").innerHTML =
+              "Critical hit!";
+            document.querySelector("#combatTextDiv").style.display = "flex";
+          });
+        }
+
         gsap.to(waterGun.position, {
           x: recipient.position.x,
           y: recipient.position.y,
           duration: 1.75,
           ease: "power1.out",
           onComplete: () => {
-            const isCriticalHit = Math.random() < 0.05;
-            const damage = isCriticalHit ? attack.damage * 2.75 : attack.damage;
-
             recipient.health -= damage;
-            recipient.health = Math.max(recipient.health, 0);
+            recipient.health = Math.max(Math.round(recipient.health), 0);
 
             const healthbarWidth = (recipient.health / 125) * 24.4;
 
