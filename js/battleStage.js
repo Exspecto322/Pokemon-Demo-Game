@@ -14,6 +14,11 @@ let renderedSprites;
 let battleAnimationId;
 let queue;
 let awaitingExit = false;
+// Store references to dynamically attached event handlers so we can remove
+// them between battles. Without this, each battle would add new listeners and
+// a single click would trigger the handler multiple times.
+let toggleElementsDisplayHandler;
+let toggleElementsKeyHandler;
 
 function initBattle() {
   charmander = new Pokemon(pkm.Charmander);
@@ -38,8 +43,20 @@ function initBattle() {
   // charmander.health = charmander.maxHealth;
   // squirtle.health = squirtle.maxHealth;
 
+  // Remove previous event listeners if they exist to prevent stacking
+  if (toggleElementsDisplayHandler) {
+    combatTextDiv.removeEventListener("click", toggleElementsDisplayHandler);
+    combatTextDiv.removeEventListener(
+      "touchstart",
+      toggleElementsDisplayHandler
+    );
+  }
+  if (toggleElementsKeyHandler) {
+    document.removeEventListener("keydown", toggleElementsKeyHandler);
+  }
+
   // Function to toggle elements' display
-  function toggleElementsDisplay() {
+  toggleElementsDisplayHandler = function toggleElementsDisplay() {
     if (combatTextVisible) {
       combatTextDiv.style.display = "none";
       combatTextVisible = false;
@@ -53,16 +70,17 @@ function initBattle() {
       attackSelectionDiv.style.display = "none";
       sideTextDiv.style.display = "none";
     }
-  }
+  };
 
   // Click event listener
-  combatTextDiv.addEventListener("click", toggleElementsDisplay);
+  combatTextDiv.addEventListener("click", toggleElementsDisplayHandler);
 
   // Touchstart event listener
-  combatTextDiv.addEventListener("touchstart", toggleElementsDisplay);
+  combatTextDiv.addEventListener("touchstart", toggleElementsDisplayHandler);
 
-  // Keypress event listener for the 'Z' key when attackSelectionDiv & sideTextDiv this keydown should do nothing.
-  document.addEventListener("keydown", function (event) {
+  // Keypress event listener for the 'Z' key when attackSelectionDiv &
+  // sideTextDiv are visible this keydown should do nothing.
+  toggleElementsKeyHandler = function (event) {
     if (
       !(
         attackSelectionDiv.style.display === "flex" &&
@@ -70,9 +88,10 @@ function initBattle() {
       ) &&
       (event.key === "z" || event.key === "Z")
     ) {
-      toggleElementsDisplay();
+      toggleElementsDisplayHandler();
     }
-  });
+  };
+  document.addEventListener("keydown", toggleElementsKeyHandler);
 
   // Other elements to change to display: flex after #overlappingDiv animation
   const interfaceBattle = [
