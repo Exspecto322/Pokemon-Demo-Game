@@ -170,17 +170,39 @@ const movables = [
 ];
 
 function playerJump() {
-  const jumpDistance = Hill.height;
+  const jumpDistance = Hill.height + 100;
   player.isJumping = true;
   player.animate = true;
+
   const positions = movables.map((movable) => movable.position);
-  gsap.to(positions, {
-    y: `-=${jumpDistance}`,
-    duration: 0.3,
+  const originalY = player.position.y;
+
+  const tl = gsap.timeline({
     onComplete: () => {
       player.isJumping = false;
+      player.position.y = originalY;
     },
   });
+
+  tl.to(player.position, {
+    y: originalY - 30,
+    duration: 0.15,
+    ease: "power1.out",
+  });
+  tl.to(player.position, {
+    y: originalY,
+    duration: 0.15,
+    ease: "power1.in",
+  });
+  tl.to(
+    positions,
+    {
+      y: `-=${jumpDistance}`,
+      duration: 0.3,
+      ease: "power1.inOut",
+    },
+    0
+  );
 }
 
 // Check collision against hills in a given direction.
