@@ -57,6 +57,16 @@ function initBattle() {
 
   // Function to toggle elements' display
   toggleElementsDisplayHandler = function toggleElementsDisplay() {
+    // Ignore toggle attempts while animations or queued actions are running
+    if (
+      charmander.isAnimating ||
+      squirtle.isAnimating ||
+      queue.length > 0 ||
+      awaitingExit
+    ) {
+      return;
+    }
+
     if (combatTextVisible) {
       combatTextDiv.style.display = "none";
       combatTextVisible = false;
@@ -136,6 +146,15 @@ function initBattle() {
   // event listeners for our buttons (attack)
   document.querySelectorAll("button").forEach((button) => {
     button.addEventListener("click", (e) => {
+      // Prevent actions if an animation is playing or a Pokémon has fainted
+      if (
+        charmander.health <= 0 ||
+        squirtle.health <= 0 ||
+        charmander.isAnimating
+      ) {
+        return;
+      }
+
       const selectedAttack = attacks[e.currentTarget.innerHTML];
       charmander.attack({
         attack: selectedAttack,
@@ -168,6 +187,9 @@ function animateBattle() {
 }
 
 document.querySelector("#combatTextDiv").addEventListener("click", (e) => {
+  // Prevent advancing dialogue while an animation is still playing
+  if (charmander.isAnimating || squirtle.isAnimating) return;
+
   if (awaitingExit) {
     // Player clicked to confirm faint and exit battle
     e.currentTarget.style.display = "none";
@@ -221,6 +243,9 @@ document.querySelector("#combatTextDiv").addEventListener("click", (e) => {
 
 document.querySelector("#combatTextDiv").addEventListener("touchstart", (e) => {
   e.preventDefault();
+  // Prevent advancing dialogue while an animation is still playing
+  if (charmander.isAnimating || squirtle.isAnimating) return;
+
   if (awaitingExit) {
     // Player confirmed faint via touch; perform exit
     e.currentTarget.style.display = "none";
@@ -279,6 +304,9 @@ document.querySelector("#combatTextDiv").addEventListener("touchstart", (e) => {
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "z" || e.key === "Z") {
+    // Prevent advancing dialogue while an animation is still playing
+    if (charmander.isAnimating || squirtle.isAnimating) return;
+
     if (awaitingExit) {
       // Player pressed 'Z' to confirm faint and exit
       document.querySelector("#combatTextDiv").style.display = "none";

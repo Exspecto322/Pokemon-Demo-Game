@@ -112,8 +112,8 @@ class Pokemon extends Sprite {
   }
 
   attack({ attack, recipient, renderedSprites }) {
-    // Prevent overlapping attacks
-    if (this.isAnimating) return;
+    // Prevent overlapping attacks or actions when a Pokémon has fainted
+    if (this.isAnimating || this.health <= 0 || recipient.health <= 0) return;
     this.isAnimating = true;
 
     document.querySelector("#attackSelectionDiv").style.display = "none";
